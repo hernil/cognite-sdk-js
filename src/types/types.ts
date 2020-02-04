@@ -817,6 +817,7 @@ export interface ExternalFilesMetadata {
   mimeType?: FileMimeType;
   metadata?: Metadata;
   assetIds?: CogniteInternalId[];
+  dataSetId?: CogniteInternalId;
   sourceCreatedTime?: Date;
   sourceModifiedTime?: Date;
 }
@@ -834,6 +835,7 @@ export interface FileChange {
     assetIds?: ArrayPatchLong;
     sourceCreatedTime?: SinglePatchDate;
     sourceModifiedTime?: SinglePatchDate;
+    dataSetId?: NullableSinglePatchLong;
   };
 }
 
@@ -860,6 +862,10 @@ export interface FileFilter extends Limit {
      * Only include files that have a related asset in a tree rooted at any of these root assetIds.
      */
     rootAssetIds?: IdEither[];
+    /**
+     * Only include items that reference these specific dataSet IDs
+     */
+    dataSetIds?: CogniteInternalId[];
     /**
      * Only include files that are related to an asset in a subtree rooted at any of these assetIds.
      * If the total size of the given subtrees exceeds 100,000 assets, an error will be returned.
@@ -1880,6 +1886,22 @@ export interface DatasetFilter extends CreatedAndLastUpdatedTimeFilter {
 
 export interface DatasetFilterRequest extends FilterQuery {
   filter?: DatasetFilter;
+}
+
+export type DatasetChange = DatasetChangeById | DatasetChangeByExternalId;
+
+export interface DatasetChangeById extends DatasetPatch, InternalId {}
+
+export interface DatasetChangeByExternalId extends DatasetPatch, ExternalId {}
+
+export interface DatasetPatch {
+  update: {
+    externalId?: SinglePatchString;
+    name?: SinglePatchString;
+    description?: SinglePatchString;
+    metadata?: ObjectPatch;
+    writeProtected?: SetField<boolean>;
+  };
 }
 
 export type WRITE = 'WRITE';
