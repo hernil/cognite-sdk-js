@@ -255,6 +255,7 @@ interface SequenceBase {
    * Asset this sequence is associated with
    */
   assetId?: CogniteInternalId;
+  dataSetId?: CogniteInternalId;
   externalId?: CogniteExternalId;
   metadata?: Metadata;
 }
@@ -305,6 +306,10 @@ export interface AssetFilter extends Limit {
     parentExternalIds?: CogniteExternalId[];
     rootIds?: IdEither[];
     /**
+     * Only include assets that reference these specific dataSet IDs
+     */
+    dataSetIds?: IdEither[];
+    /**
      * Only include assets in subtrees rooted at the specified assets.
      * If the total size of the given subtrees exceeds 100,000 assets, an error will be returned.
      */
@@ -345,6 +350,7 @@ export interface SequenceFilter {
      * Only include sequences that have a related asset in a tree rooted at any of these root assetIds.
      */
     rootAssetIds?: CogniteInternalId[];
+    dataSetIds?: CogniteInternalId[];
     /**
      * Only include sequences that have a related asset in a subtree rooted at any of these assetIds.
      * If the total size of the given subtrees exceeds 100,000 assets, an error will be returned.
@@ -397,6 +403,7 @@ export interface AssetPatch {
     externalId?: SinglePatchString;
     name?: SinglePatchRequiredString;
     description?: SinglePatchString;
+    dataSetId?: NullableSinglePatchLong;
     metadata?: ObjectPatch;
     source?: SinglePatchString;
   };
@@ -688,6 +695,7 @@ export interface SequencePatch {
     name?: SinglePatchString;
     description?: SinglePatchString;
     assetId?: NullableSinglePatchLong;
+    dataSetId?: NullableSinglePatchLong;
     externalId?: SinglePatchString;
     endTime?: SinglePatchDate;
     metadata?: ObjectPatch;
@@ -710,6 +718,10 @@ export interface EventFilter extends CreatedAndLastUpdatedTimeFilter {
    * Only include events that have a related asset in a tree rooted at any of these root assetIds.
    */
   rootAssetIds?: IdEither[];
+  /**
+   * Only include assets that reference these specific dataSet IDs
+   */
+  dataSetIds?: IdEither[];
   /**
    * Only include events that have a related asset in a subtree rooted at any of these assetIds.
    * If the total size of the given subtrees exceeds 100,000 assets, an error will be returned.
@@ -766,6 +778,7 @@ export interface EventPatch {
     description?: SinglePatchString;
     metadata?: ObjectPatch;
     assetIds?: ArrayPatchLong;
+    dataSetId?: NullableSinglePatchLong;
     source?: SinglePatchString;
   };
 }
@@ -784,6 +797,7 @@ export interface ExternalAsset {
   name: AssetName;
   parentId?: CogniteInternalId;
   description?: AssetDescription;
+  dataSetId?: CogniteInternalId;
   metadata?: Metadata;
   source?: AssetSource;
 }
@@ -807,6 +821,7 @@ export interface ExternalEvent {
   description?: string;
   metadata?: Metadata;
   assetIds?: CogniteInternalId[];
+  dataSetId?: CogniteInternalId;
   source?: string;
 }
 
@@ -1015,6 +1030,7 @@ export interface GetTimeSeriesMetadataDTO
    * Asset that this time series belongs to.
    */
   assetId?: CogniteInternalId;
+  dataSetId?: CogniteInternalId;
   isStep: TimeseriesIsStep;
   /**
    * Description of the time series.
@@ -1368,6 +1384,10 @@ export interface PostTimeSeriesMetadataDTO {
    */
   assetId?: CogniteInternalId;
   /**
+   * DataSet that this time series related with.
+   */
+  dataSetId?: CogniteInternalId;
+  /**
    * Whether the time series is a step series or not.
    */
   isStep?: boolean;
@@ -1706,6 +1726,7 @@ export interface TimeSeriesPatch {
     metadata?: ObjectPatch;
     unit?: NullableSinglePatchString;
     assetId?: NullableSinglePatchLong;
+    dataSetId?: NullableSinglePatchLong;
     description?: NullableSinglePatchString;
     securityCategories?: ArrayPatchLong;
   };
@@ -1744,6 +1765,10 @@ interface TimeseriesFilterProps extends CreatedAndLastUpdatedTimeFilter {
    * Only include timeseries that have a related asset in a tree rooted at any of these root assetIds.
    */
   rootAssetIds?: CogniteInternalId[];
+  /**
+   * Only include assets that reference these specific dataSet IDs
+   */
+  dataSetIds?: CogniteInternalId[];
   /**
    * Only include timeseries that are related to an asset in a subtree rooted at any of these assetIds.
    * If the total size of the given subtrees exceeds 100,000 assets, an error will be returned.
@@ -1852,9 +1877,9 @@ export interface Versioned3DFile {
  * For write-protected data set in addition to a writing capability that has given resource data in scope, principal must be an owners of the data set.
  * Note that this does not affect any security categories set for given resource data, both security category membership and data set ownership is required in such case
  */
-export type DatasetWriteProtected = boolean;
+export type DataSetWriteProtected = boolean;
 
-export interface ExternalDataset {
+export interface ExternalDataSet {
   externalId?: CogniteExternalId;
   /**
    * Name of data set
@@ -1865,36 +1890,36 @@ export interface ExternalDataset {
    */
   description?: string;
   metadata?: Metadata;
-  writeProtected?: DatasetWriteProtected;
+  writeProtected?: DataSetWriteProtected;
 }
 
-export interface Dataset
-  extends ExternalDataset,
+export interface DataSet
+  extends ExternalDataSet,
     InternalId,
     CreatedAndLastUpdatedTime {
-  writeProtected: DatasetWriteProtected;
+  writeProtected: DataSetWriteProtected;
 }
 
 /**
  * Filter on data sets with exact match
  */
-export interface DatasetFilter extends CreatedAndLastUpdatedTimeFilter {
+export interface DataSetFilter extends CreatedAndLastUpdatedTimeFilter {
   metadata?: Metadata;
   externalIdPrefix?: ExternalIdPrefix;
-  writeProtected?: DatasetWriteProtected;
+  writeProtected?: DataSetWriteProtected;
 }
 
-export interface DatasetFilterRequest extends FilterQuery {
-  filter?: DatasetFilter;
+export interface DataSetFilterRequest extends FilterQuery {
+  filter?: DataSetFilter;
 }
 
-export type DatasetChange = DatasetChangeById | DatasetChangeByExternalId;
+export type DataSetChange = DataSetChangeById | DataSetChangeByExternalId;
 
-export interface DatasetChangeById extends DatasetPatch, InternalId {}
+export interface DataSetChangeById extends DataSetPatch, InternalId {}
 
-export interface DatasetChangeByExternalId extends DatasetPatch, ExternalId {}
+export interface DataSetChangeByExternalId extends DataSetPatch, ExternalId {}
 
-export interface DatasetPatch {
+export interface DataSetPatch {
   update: {
     externalId?: SinglePatchString;
     name?: SinglePatchString;
