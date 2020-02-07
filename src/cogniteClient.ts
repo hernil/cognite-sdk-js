@@ -293,7 +293,7 @@ export default class CogniteClient {
       );
     }
 
-    const onTokens = options.onTokens || (() => { });
+    const onTokens = options.onTokens || (() => {});
     const onAuthenticate =
       options.onAuthenticate === POPUP
         ? onAuthenticateWithPopup
@@ -446,10 +446,7 @@ export default class CogniteClient {
       SecurityCategoriesAPI,
       'securitycategories'
     );
-    this.serviceAccountsApi = apiFactory(
-      ServiceAccountsAPI,
-      'serviceaccounts'
-    );
+    this.serviceAccountsApi = apiFactory(ServiceAccountsAPI, 'serviceaccounts');
     this.apiKeysApi = apiFactory(ApiKeysAPI, 'apikeys');
     this.models3DApi = apiFactory(Models3DAPI, models3DPath);
     this.revisions3DApi = apiFactory(Revisions3DAPI, models3DPath);
@@ -458,7 +455,6 @@ export default class CogniteClient {
     this.viewer3DApi = apiFactory(Viewer3DAPI, '3d');
     this.projectsApi = new ProjectsAPI(apiUrl(), ...defaultArgs);
     this.loginApi = new LoginAPI(...defaultArgs);
-
   };
 }
 
